@@ -869,8 +869,11 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position& fromPos, 
 void Game::playerMoveItem(Player* player, const Position& fromPos,
                           uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder)
 {
-	if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime();
+	bool pushWhenAttacking = g_config.getBoolean(ConfigManager::PUSH_WHEN_ATTACKING);
+	bool canPerformPush = pushWhenAttacking ? player->canPush() : player->canDoAction();
+
+	if (!canPerformPush) {
+		uint32_t delay = pushWhenAttacking ? player->getNextPushTime() : player->getNextActionTime();
 		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerMoveItemByPlayerID, this,
 		                      player->getID(), fromPos, spriteId, fromStackPos, toPos, count));
 		player->setNextActionTask(task);
@@ -1036,6 +1039,17 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player, nullptr, &fromPos, &toPos);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
+	} else {
+		if (pushWhenAttacking) {
+			bool isAdjacent = Position::areInRange<1, 1>(playerPos, mapFromPos) && playerPos.z == mapFromPos.z;
+			int32_t pushDelay = isAdjacent ?
+				g_config.getNumber(ConfigManager::PUSH_DELAY) :
+				g_config.getNumber(ConfigManager::PUSH_DISTANCE_DELAY);
+
+			if (pushDelay > 0) {
+				player->setNextPushAction(OTSYS_TIME() + pushDelay);
+			}
+		}
 	}
 }
 

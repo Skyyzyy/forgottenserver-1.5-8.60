@@ -1224,7 +1224,6 @@ void Player::onWalk(Direction& dir)
 {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
-	setNextAction(OTSYS_TIME() + getStepDuration(dir));
 }
 
 void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
@@ -1413,6 +1412,11 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 uint32_t Player::getNextActionTime() const
 {
 	return std::max<int64_t>(SCHEDULER_MINTICKS, nextAction - OTSYS_TIME());
+}
+
+uint32_t Player::getNextPushTime() const
+{
+	return std::max<int64_t>(SCHEDULER_MINTICKS, nextPushAction - OTSYS_TIME());
 }
 
 void Player::onThink(uint32_t interval)
@@ -3155,8 +3159,6 @@ void Player::doAttacking(uint32_t)
 		if (weapon) {
 			if (!weapon->interruptSwing()) {
 				result = weapon->useWeapon(this, tool, attackedCreature);
-			} else if (!classicSpeed && !canDoAction()) {
-				delay = getNextActionTime();
 			} else {
 				result = weapon->useWeapon(this, tool, attackedCreature);
 			}

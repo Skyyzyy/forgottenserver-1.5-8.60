@@ -69,6 +69,7 @@ class ConfigManager
 			ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS,
 			REMOVE_ON_DESPAWN,
 			PLAYER_CONSOLE_LOGS,
+			PUSH_WHEN_ATTACKING,
 
 			LAST_BOOLEAN_CONFIG /* this must be the last one */
 		};
@@ -134,6 +135,8 @@ class ConfigManager
 			VIP_PREMIUM_LIMIT,
 			DEPOT_FREE_LIMIT,
 			DEPOT_PREMIUM_LIMIT,
+			PUSH_DELAY,
+			PUSH_DISTANCE_DELAY,
 
 			LAST_INTEGER_CONFIG /* this must be the last one */
 		};

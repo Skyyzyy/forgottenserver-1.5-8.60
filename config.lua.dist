@@ -55,6 +55,14 @@ onlyInvitedCanMoveHouseItems = true
 timeBetweenActions = 200
 timeBetweenExActions = 1000
 
+-- Push Mechanics
+-- NOTE: pushDelay: interval for every adjacent push (in milliseconds)
+-- NOTE: pushDistanceDelay: delay for every distance push (in milliseconds)
+-- NOTE: pushWhenAttacking: true = enable push during attack, false = disable push during attack
+pushDelay = 1000
+pushDistanceDelay = 1500
+pushWhenAttacking = false
+
 -- Map
 -- NOTE: set mapName WITHOUT .otbm at the end
 mapName = "forgotten"

@@ -1008,6 +1008,16 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getNextActionTime() const;
 
+		void setNextPushAction(int64_t time) {
+			if (time > nextPushAction) {
+				nextPushAction = time;
+			}
+		}
+		bool canPush() const {
+			return nextPushAction <= OTSYS_TIME();
+		}
+		uint32_t getNextPushTime() const;
+
 		Item* getWriteItem(uint32_t& windowTextId, uint16_t& maxWriteLen);
 		void setWriteItem(Item* item, uint16_t maxWriteLen = 0);
 
@@ -1107,6 +1117,7 @@ class Player final : public Creature, public Cylinder
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;
+		int64_t nextPushAction = 0;
 
 		BedItem* bedItem = nullptr;
 		Guild* guild = nullptr;
