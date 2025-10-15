@@ -378,7 +378,7 @@ void Map::getSpectatorsInternal(SpectatorVec& spectators, const Position& center
 						continue;
 					}
 
-					int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
+					auto offsetZ = Position::getOffsetZ(centerPos, cpos);
 					if ((min_y + offsetZ) > cpos.y || (max_y + offsetZ) < cpos.y || (min_x + offsetZ) > cpos.x || (max_x + offsetZ) < cpos.x) {
 						continue;
 					}
@@ -520,7 +520,7 @@ bool Map::isTileClear(uint16_t x, uint16_t y, uint8_t z, bool blockFloor /*= fal
 		return false;
 	}
 
-	return !tile->hasProperty(CONST_PROP_BLOCKPROJECTILE);
+	return !tile->hasProperty(CONST_PROP_BLOCKPROJECTILE) && !tile->getTopCreature();
 }
 
 namespace {

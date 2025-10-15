@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "theforgottenserver",
+  "version-string": "1.5",
+  "description": "The Forgotten Server - Open Source MMORPG Server",
+  "dependencies": [
+    "boost-asio",
+    "boost-iostreams",
+    "boost-lexical-cast",
+    "boost-system",
+    "boost-variant",
+    "boost-filesystem",
+    "boost-lockfree",
+    "cryptopp",
+    "fmt",
+    "libmysql",
+    "luajit",
+    "pugixml"
+  ]
+}

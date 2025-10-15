@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.production
+      args:
+        ALPINE_VERSION: "3.22"
     image: tfs:production
     container_name: tfs-server
     restart: unless-stopped
@@ -26,3 +28,24 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    labels:
+      - "com.tfs.environment=production"
+      - "com.tfs.description=The Forgotten Server - Production"
+      - "com.tfs.version=1.5"
+    networks:
+      - tfs-network
+    # Optional: Uncomment to set resource limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 1G
+
+networks:
+  tfs-network:
+    driver: bridge
+    labels:
+      - "com.tfs.network=production"

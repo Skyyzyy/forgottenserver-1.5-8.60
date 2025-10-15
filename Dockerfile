@@ -1,6 +1,11 @@
-FROM alpine:3.18 AS build
+# syntax=docker/dockerfile:1
+
+ARG ALPINE_VERSION=3.22
+
+FROM alpine:${ALPINE_VERSION} AS build
+
 # Enable community repository
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories && \
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.22/community" >> /etc/apk/repositories && \
     apk add --no-cache \
         binutils \
         boost-dev \
@@ -8,8 +13,8 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/rep
         cmake \
         crypto++-dev \
         fmt-dev \
-        gcc \
         g++ \
+        gcc \
         gdb \
         gmp-dev \
         luajit-dev \
@@ -27,23 +32,24 @@ WORKDIR /usr/src/forgottenserver/build
 RUN cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. && \
     make -j$(nproc)
 
-FROM alpine:3.18
+FROM alpine:${ALPINE_VERSION}
+
 # Enable community repository
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories && \
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.22/community" >> /etc/apk/repositories && \
     apk add --no-cache \
+        boost-filesystem \
         boost-iostreams \
         boost-system \
-        boost-filesystem \
         crypto++ \
         fmt \
         gdb \
         gmp \
+        libgcc \
+        libstdc++ \
         luajit \
         mariadb-connector-c \
-        pugixml \
-        libstdc++ \
-        libgcc \
-        netcat-openbsd && \
+        netcat-openbsd \
+        pugixml && \
     rm -rf /var/cache/apk/*
 
 # Create non-root user for security

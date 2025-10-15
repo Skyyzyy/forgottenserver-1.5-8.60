@@ -4594,7 +4594,7 @@ void Game::loadMotdNum()
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
 	}
 
-	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
+	result = db.storeQuery("SELECT UNHEX(`value`) AS `value` FROM `server_config` WHERE `config` = 'motd_hash'");
 	if (result) {
 		motdHash = result->getString("value");
 		if (motdHash != transformToSHA1(g_config.getString(ConfigManager::MOTD))) {
@@ -4609,7 +4609,7 @@ void Game::saveMotdNum() const
 {
 	Database& db = Database::getInstance();
 	db.executeQuery(fmt::format("UPDATE `server_config` SET `value` = '{:d}' WHERE `config` = 'motd_num'", motdNum));
-	db.executeQuery(fmt::format("UPDATE `server_config` SET `value` = '{:s}' WHERE `config` = 'motd_hash'", transformToSHA1(g_config.getString(ConfigManager::MOTD))));
+	db.executeQuery(fmt::format("UPDATE `server_config` SET `value` = HEX('{:s}') WHERE `config` = 'motd_hash'", transformToSHA1(g_config.getString(ConfigManager::MOTD))));
 }
 
 void Game::checkPlayersRecord()

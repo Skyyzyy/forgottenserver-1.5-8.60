@@ -55,6 +55,9 @@ void RSA::loadPEM(const std::string& filename)
 	for (std::string line; std::getline(file, line); oss << line);
 	std::string key = oss.str();
 
+	// Remove trailing whitespace (handles both CRLF and LF line endings)
+	key.erase(key.find_last_not_of(" \n\r\t") + 1);
+
 	if (key.substr(0, header.size()) != header) {
 		throw std::runtime_error("Missing RSA private key header.");
 	}

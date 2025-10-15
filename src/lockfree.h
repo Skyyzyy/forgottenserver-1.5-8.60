@@ -45,14 +45,24 @@ struct LockfreeFreeList
 };
 
 template <typename T, size_t CAPACITY>
-class LockfreePoolingAllocator : public std::allocator<T>
+class LockfreePoolingAllocator
 {
 	public:
+		using value_type = T;
+		using pointer = T*;
+		using const_pointer = const T*;
+		using size_type = std::size_t;
+		using difference_type = std::ptrdiff_t;
+
+		template<typename U>
+		struct rebind {
+			using other = LockfreePoolingAllocator<U, CAPACITY>;
+		};
+
 		LockfreePoolingAllocator() = default;
 
-		template <typename U, class = typename std::enable_if<!std::is_same<U, T>::value>::type>
-		explicit constexpr LockfreePoolingAllocator(const U&) {}
-		using value_type = T;
+		template <typename U>
+		constexpr LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY>&) noexcept {}
 
 		T* allocate(size_t) const {
 			auto& inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
@@ -71,6 +81,17 @@ class LockfreePoolingAllocator : public std::allocator<T>
 				//(it has already been called at this point)
 				operator delete(p);
 			}
+		}
+
+		// Comparison operators (allocators are always equal since they're stateless)
+		template <typename U>
+		bool operator==(const LockfreePoolingAllocator<U, CAPACITY>&) const noexcept {
+			return true;
+		}
+
+		template <typename U>
+		bool operator!=(const LockfreePoolingAllocator<U, CAPACITY>&) const noexcept {
+			return false;
 		}
 };
 

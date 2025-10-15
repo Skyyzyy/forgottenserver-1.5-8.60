@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        ALPINE_VERSION: "3.22"
     image: tfs:debug
     container_name: tfs-server-debug
     restart: on-failure:3
@@ -22,3 +24,15 @@ services:
       - seccomp:unconfined
     environment:
       - TZ=UTC
+    labels:
+      - "com.tfs.environment=development"
+      - "com.tfs.description=The Forgotten Server - Debug Mode"
+      - "com.tfs.version=1.5"
+    networks:
+      - tfs-network
+
+networks:
+  tfs-network:
+    driver: bridge
+    labels:
+      - "com.tfs.network=development"
